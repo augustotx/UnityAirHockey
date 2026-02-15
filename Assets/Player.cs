@@ -3,11 +3,11 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rb2d;
+    public AudioSource source;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //source = GetComponent<AudioSource>();
         rb2d = GetComponent<Rigidbody2D>();
     }
 
@@ -19,18 +19,35 @@ public class Player : MonoBehaviour
         var pos = transform.position;
 
         Vector2 dir = mousePos - playerPos;
+        Vector2 vel = rb2d.linearVelocity;
+
+        if (dir.x <= 0.01f && dir.y <= 0.01f)
+        {
+            rb2d.linearVelocity = Vector2.zero;
+            pos.x = mousePos.x;
+            pos.y = mousePos.y;
+            checkBounds(pos, vel);
+            return;
+        }
         dir.Normalize();
 
         float force = 10.0f;
 
         Vector2 forceVec = dir * force;
 
-        Vector2 vel = rb2d.linearVelocity;
         vel.x = forceVec.x;
         vel.y = forceVec.y;
-        //pos.x = mousePos.x;
-        //pos.y = mousePos.y;
+        pos.x = mousePos.x;
+        pos.y = mousePos.y;
 
+        checkBounds(pos, vel);
+
+
+
+    }
+
+    void checkBounds(Vector2 pos, Vector2 vel)
+    {
         if (pos.x > 4.4f)
         {
             pos.x = 4.4f;
@@ -53,14 +70,12 @@ public class Player : MonoBehaviour
             pos.y = -7f;
             vel.y = 0;
         }
-
         transform.position = pos;
         rb2d.linearVelocity = vel;
-
     }
 
-    /*void OnCollisionEnter2D(Collision2D coll)
+    void OnCollisionEnter2D(Collision2D coll)
     {
         source.Play();
-    }*/
+    }
 }

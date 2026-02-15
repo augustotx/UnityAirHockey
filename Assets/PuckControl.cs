@@ -31,6 +31,7 @@ public class BallControl : MonoBehaviour
         if (coll.collider.CompareTag("Mallet"))
         {
             vel.y *= -1;
+            if (vel.y > -2f) vel.y = -2f;
             rb2d.linearVelocity = vel;
         }
     }
@@ -53,9 +54,17 @@ public class BallControl : MonoBehaviour
         // Limites Verticais (Eixo Y)
         if (pos.y > 7f)
         {
+            float oldpos = pos.y;
             pos.y = 7f;
             if (pos.x > -2.7f && pos.x < 2.7f)
             {
+                // aumentar limite pra 7.85 pra chegar no "gol"
+                if (oldpos < 7.85f)
+                {
+                    pos.y = oldpos;
+                    transform.position = pos;
+                    rb2d.linearVelocity = vel; return;
+                }
                 playerScore += 1;
                 PScore.text = playerScore.ToString();
                 pos.x = 0;
@@ -69,9 +78,17 @@ public class BallControl : MonoBehaviour
         }
         else if (pos.y < -7f)
         {
+            float oldpos = pos.y;
             pos.y = -7f;
             if (pos.x > -2.7f && pos.x < 2.7f)
             {
+                // aumentar limite pra 7.85 pra chegar no "gol"
+                if (oldpos > -7.85f)
+                {
+                    pos.y = oldpos;
+                    transform.position = pos;
+                    rb2d.linearVelocity = vel; return;
+                }
                 aiScore += 1;
                 pos.y = 0;
                 vel.x = 0;
